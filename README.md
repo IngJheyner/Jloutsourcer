@@ -99,7 +99,7 @@ JlOutsourcer/
 ### 1. Clonar el Repositorio
 
 ```bash
-git clone <url-del-repositorio>
+git clone https://github.com/IngJheyner/Jloutsourcer.git
 cd JlOutsourcer
 ```
 
@@ -515,7 +515,7 @@ Este proyecto es parte de una prueba técnica para Core Apps.
 
 ## 📞 Contacto
 
-Para consultas o soporte, contactar a: [Tu email o información de contacto]
+Para consultas o soporte, contactar a: Jheyner David Ibagon Cuenca
 
 ---
 
