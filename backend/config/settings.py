@@ -31,7 +31,7 @@ INSTALLED_APPS = [
     'corsheaders',
     
     # Locales
-    # 'app_affiliate',
+    'app_affiliate',
 ]
 
 MIDDLEWARE = [

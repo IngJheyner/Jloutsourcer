@@ -28,4 +28,3 @@ black==24.1.1
 
 # Development
 ipython==8.20.0
-
