@@ -29,11 +29,15 @@ Aplicación full-stack que permite administrar afiliados de una cooperativa y re
 - **python-decouple** - Gestión de variables de entorno
 
 ### Frontend
-- **React 18+** - Framework UI
+- **React 19** - Biblioteca UI
 - **TypeScript** - Tipado estático
-- **shadcn/ui** - Componentes UI
-- **Vite** - Build tool
-- *(En desarrollo)*
+- **Vite 7** - Build tool y dev server
+- **shadcn/ui** - Sistema de componentes UI
+- **TailwindCSS 4** - Framework CSS utility-first
+- **React Router 7** - Enrutamiento SPA
+- **TanStack Query** - Manejo de estado servidor
+- **Axios** - Cliente HTTP
+- **Lucide React** - Iconos
 
 ### DevOps & Herramientas
 - **Docker & Docker Compose** - Containerización
@@ -77,8 +81,18 @@ JlOutsourcer/
 │   ├── requirements.txt             # Dependencias Python
 │   └── Dockerfile                   # Configuración Docker backend
 │
-├── frontend/                        # Aplicación React
-│   └── (En desarrollo)
+├── frontend/                        # Aplicación React + TypeScript
+│   ├── src/
+│   │   ├── components/              # Componentes reutilizables
+│   │   │   ├── ui/                  # Componentes shadcn/ui
+│   │   │   └── features/            # Componentes de funcionalidad
+│   │   ├── pages/                   # Páginas de la aplicación
+│   │   ├── services/                # API clients
+│   │   ├── types/                   # Tipos TypeScript
+│   │   ├── lib/                     # Utilidades
+│   │   └── hooks/                   # Custom React hooks
+│   ├── package.json
+│   └── vite.config.ts
 │
 ├── docker-compose.yml               # Orquestación de servicios
 ├── .env.example                     # Plantilla de variables de entorno
@@ -154,8 +168,10 @@ docker-compose ps
 ### Servicios Disponibles
 
 - **Backend (Django):** http://localhost:8000
+- **API REST:** http://localhost:8000/api/
+- **Django Admin:** http://localhost:8000/admin/
 - **Base de Datos (PostgreSQL):** localhost:5432
-- **Frontend (React):** http://localhost:3000 *(próximamente)*
+- **Frontend (React):** http://localhost:5173
 
 ### Comandos Útiles de Docker
 
@@ -181,59 +197,45 @@ docker-compose restart web
 
 ---
 
-## 🔧 Levantar el Backend (Sin Docker)
+## ⚛️ Levantar el Frontend
 
-### 1. Crear Entorno Virtual
-
-```bash
-cd backend
-python3 -m venv venv
-source venv/bin/activate  # En Windows: venv\Scripts\activate
-```
-
-### 2. Instalar Dependencias
+### 1. Instalar Dependencias
 
 ```bash
-pip install -r requirements.txt
-```
-
-### 3. Configurar Variables de Entorno
-
-```bash
-# Crear archivo .env en la raíz del proyecto
-# Asegúrate de cambiar DB_HOST=localhost (no 'db')
-```
-
-### 4. Ejecutar Migraciones
-
-```bash
-python manage.py migrate
-```
-
-### 5. Crear Superusuario (Opcional)
-
-```bash
-python manage.py createsuperuser
-```
-
-### 6. Iniciar Servidor de Desarrollo
-
-```bash
-python manage.py runserver
-```
-
-El backend estará disponible en http://localhost:8000
-
----
-
-## ⚛️ Levantar el Frontend (En Desarrollo)
-
-```bash
-# Próximamente...
 cd frontend
 npm install
+```
+
+### 2. Configurar Variables de Entorno
+
+```bash
+# Crear archivo .env
+echo "VITE_API_BASE_URL=http://localhost:8000/api" > .env
+```
+
+### 3. Iniciar Servidor de Desarrollo
+
+```bash
 npm run dev
 ```
+
+El frontend estará disponible en **http://localhost:5173**
+
+### 4. Build para Producción
+
+```bash
+npm run build
+npm run preview  # Previsualizar build
+```
+
+### Características del Frontend
+
+- **Interfaz Moderna:** UI limpia y profesional con shadcn/ui
+- **Responsive:** Adaptable a móviles, tablets y desktop
+- **Tipado Fuerte:** TypeScript para prevenir errores
+- **Estado del Servidor:** TanStack Query para cache y sincronización
+- **Routing:** Navegación SPA con React Router
+- **Componentes Reutilizables:** Arquitectura modular y mantenible
 
 ---
 
@@ -340,6 +342,24 @@ El proyecto implementa una arquitectura en capas que garantiza:
 - **Regla:** Solo transforma HTTP ↔ Application layer
 - **Ejemplo:** `AffiliateViewSet`, `AffiliateSerializer`
 
+### 📝 Nota Importante sobre Migraciones
+
+Aunque seguimos Clean Architecture, **las migraciones de Django deben estar en `app_affiliate/migrations/`**, no en `infrastructure/`. 
+
+**¿Por qué?**
+- Django busca migraciones en `<app_name>/migrations/` por convención
+- El comando `makemigrations` las genera automáticamente en esta ubicación
+- Es una **concesión necesaria** a la infraestructura de Django
+
+```
+app_affiliate/
+├── migrations/          ← Migraciones aquí (convención Django)
+│   └── 0001_initial.py
+├── infrastructure/
+│   └── repositories/
+│       └── orm_models.py   ← Modelos ORM aquí (Clean Architecture)
+```
+
 ### Principios SOLID Aplicados
 
 - **S**ingle Responsibility: Cada clase tiene una única responsabilidad
@@ -444,8 +464,6 @@ docker-compose exec web pytest app_affiliate/tests/test_affiliates.py
 - ✅ PostgreSQL con credenciales seguras
 
 ---
-
-## 🚧 Limitaciones Conocidas y Mejoras Futuras
 
 ### Limitaciones Actuales
 
